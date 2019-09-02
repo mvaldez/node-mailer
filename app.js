@@ -9,31 +9,32 @@ const getOptions = function(filename) {
     }
 }
 
-nodemailer.createTestAccount((err, account) => {
-    const creds = getOptions('credentials.json')
-    const options = getOptions('mailOptions.json')
+const phone = process.argv[2]
+const message = process.argv[3]
 
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.googlemail.com', // Gmail Host
-        port: 465,
-        secure: true,
-        auth: {
-            user: creds.user,
-            pass: creds.pass
-        }
-    });
+const creds = getOptions('credentials.json')
+const options = getOptions('mailOptions.json')
 
-    let mailOptions = {
-        from: options.from,
-        to: options.to,
-        subject: options.subject,
-        text: options.text
-    };
+let transporter = nodemailer.createTransport({
+    host: 'smtp.googlemail.com', // Gmail Host
+    port: 465,
+    secure: true,
+    auth: {
+        user: creds.user,
+        pass: creds.pass
+    }
+});
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: %s', info.messageId);
-    });
+let mailOptions = {
+    from: options.from,
+    to: `${phone}@txt.att.net`,
+    subject: options.subject,
+    text: message
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
 });
